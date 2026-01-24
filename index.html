@@ -23,6 +23,7 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
+
         h1, h2, h3, h4 { 
             font-family: 'Space Grotesk', sans-serif; 
             letter-spacing: -0.05em;
@@ -59,14 +60,14 @@
 
         .float-animation { animation: float 6s ease-in-out infinite; }
 
-        .golden-glow {
-            box-shadow: 0 0 40px rgba(251, 191, 36, 0.1);
-            border: 1px solid rgba(251, 191, 36, 0.2);
-        }
-
         .interactive-step:hover {
             border-color: rgba(59, 130, 246, 0.5);
             background: rgba(59, 130, 246, 0.05);
+        }
+
+        /* Garantir que o conteúdo nunca seja cortado em mobile */
+        * {
+            box-sizing: border-box;
         }
 
         @media print { .no-print { display: none !important; } }
@@ -74,12 +75,12 @@
 <script type="importmap">
 {
   "imports": {
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
-    "react/": "https://esm.sh/react@^19.2.3/",
     "react": "https://esm.sh/react@^19.2.3",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
     "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
-    "vite": "https://esm.sh/vite@^7.3.1"
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
   }
 }
 </script>
