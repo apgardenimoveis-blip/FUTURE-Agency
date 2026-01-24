@@ -112,30 +112,30 @@ const App: React.FC = () => {
         </div>
       </nav>
 
-      {/* Hero: Título Responsivo e Legibilidade */}
-      <header className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-24 pb-20 overflow-hidden">
+      {/* Hero: Título Responsivo e Legibilidade (Garantindo que não corte) */}
+      <header className="relative min-h-screen flex flex-col items-center justify-center text-center px-4 sm:px-6 pt-24 pb-20 overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] md:w-[1200px] h-[350px] md:h-[1200px] bg-blue-600/10 rounded-full blur-[100px] md:blur-[250px] animate-pulse"></div>
         
-        <div className="relative z-10 max-w-5xl">
+        <div className="relative z-10 w-full max-w-5xl">
           <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 md:mb-12 glass-card rounded-full text-blue-400 text-[8px] md:text-xs font-black uppercase tracking-[0.2em] md:tracking-[0.5em] float-animation ring-1 ring-blue-500/20 shadow-lg">
             <Globe size={12} className="md:size-[16px]" /> LOGÍSTICA NACIONAL 24H
           </div>
           
-          <h1 className="text-[10vw] xs:text-5xl sm:text-7xl md:text-[8.5rem] font-black mb-6 md:mb-12 leading-[1.1] md:leading-[0.85] tracking-tighter text-white uppercase italic break-words">
+          <h1 className="text-[10.5vw] xs:text-5xl sm:text-7xl md:text-[8.5rem] font-black mb-6 md:mb-12 leading-[1.1] md:leading-[0.85] tracking-tighter text-white uppercase italic break-words hyphens-auto">
             LOJA ABERTA <br />
             <span className="gradient-text">PARA TODO O PAÍS.</span>
           </h1>
           
-          <p className="text-sm sm:text-xl md:text-3xl text-slate-300 max-w-4xl mx-auto mb-8 md:mb-20 leading-relaxed md:leading-tight font-light italic opacity-95">
+          <p className="text-sm sm:text-xl md:text-3xl text-slate-300 max-w-4xl mx-auto mb-8 md:mb-20 leading-relaxed md:leading-tight font-light italic opacity-95 px-2">
             Hoje, sem um site online, seu negócio está limitado às paredes da loja física. Enquanto você dorme, clientes de todo o <span className="text-white font-bold underline decoration-blue-500 decoration-2 underline-offset-4">Brasil</span> pesquisam seu produto e compram do concorrente.
           </p>
 
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 px-4">
             <button 
               onClick={() => handleWhatsApp('REUNIÃO AGORA')}
-              className="w-full sm:w-auto bg-blue-600 text-white px-8 md:px-16 py-4 md:py-9 rounded-xl md:rounded-[3rem] font-black text-[10px] md:text-base uppercase tracking-[0.2em] md:tracking-[0.3em] shadow-[0_20px_50px_rgba(59,130,246,0.4)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 md:gap-4"
+              className="w-full sm:w-auto bg-blue-600 text-white px-8 md:px-16 py-4 md:py-9 rounded-xl md:rounded-[3rem] font-black text-xs md:text-base uppercase tracking-[0.2em] md:tracking-[0.3em] shadow-[0_20px_50px_rgba(59,130,246,0.4)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 md:gap-4"
             >
-              MARCAR REUNIÃO <span className="hidden sm:inline">AGORA</span> <Zap size={16} />
+              MARCAR REUNIÃO AGORA <Zap size={16} />
             </button>
           </div>
         </div>
@@ -265,7 +265,7 @@ const App: React.FC = () => {
               <Gift size={16} /> EXCLUSIVO MK BASES BOX
             </div>
             
-            <h2 className="text-2xl sm:text-6xl md:text-[9.5rem] font-black text-white mb-6 md:mb-14 italic tracking-tighter leading-none uppercase">
+            <h2 className="text-2xl sm:text-6xl md:text-[9.5rem] font-black text-white mb-6 md:mb-14 italic tracking-tighter leading-none uppercase break-words px-2">
               GANHE <span className="text-blue-500">10% OFF</span> <br className="hidden md:block"/> FECHANDO HOJE
             </h2>
             
@@ -273,7 +273,7 @@ const App: React.FC = () => {
               Sua expansão nacional começa com uma decisão estratégica. Marque sua reunião agora e garanta sua oferta especial limitada.
             </p>
             
-            <div className="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-12">
+            <div className="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-12 px-4">
               <button 
                 onClick={() => handleWhatsApp('REUNIÃO AGORA')} 
                 className="w-full md:w-auto bg-blue-600 text-white px-8 md:px-20 py-4 md:py-11 rounded-2xl md:rounded-[3.5rem] font-black text-sm md:text-5xl shadow-2xl transition-all hover:scale-105 active:scale-95 uppercase tracking-tighter italic flex items-center justify-center gap-3 md:gap-8"
@@ -315,7 +315,7 @@ const App: React.FC = () => {
         </div>
       </footer>
 
-      {/* Floating Action Bar: Mobile Ergonômico (Reduzido em 10% para mobile) */}
+      {/* Floating Action Bar: Mobile Ergonômico (Reduzido em 10% para mobile conforme solicitado) */}
       <div className="fixed bottom-6 md:bottom-12 w-full z-[120] px-6 md:px-12 no-print pointer-events-none">
         <div className="max-w-lg mx-auto flex gap-4 pointer-events-auto">
           <button 
