@@ -1,9 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  ChevronRight, 
   ShieldCheck, 
-  Globe, 
   TrendingUp, 
   AlertCircle, 
   CheckCircle2, 
@@ -11,514 +9,330 @@ import {
   Zap, 
   Search, 
   MessageCircle, 
-  Mail,
-  Instagram,
-  MapPin,
-  Cpu,
-  BarChart3,
-  Award,
-  ArrowRight,
-  FileText,
-  Star,
   Clock,
-  Tag,
-  Layers,
   Rocket,
-  MousePointer2,
   Lock,
-  Eye,
   Copy,
-  Check
+  Check,
+  ChevronDown,
+  ChevronRight,
+  Layout,
+  Globe,
+  Truck,
+  Activity,
+  Sparkles,
+  Gift,
+  MousePointer2,
+  TrendingDown,
+  MapPin,
+  CreditCard,
+  ShoppingBag,
+  Users,
+  ArrowUpRight,
+  Monitor,
+  Code,
+  Target,
+  PenTool
 } from 'lucide-react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer
-} from 'recharts';
-
-// Types
-import { ClientInfo, PlanItem } from './types';
-
-// Constants
-const CLIENT: ClientInfo = {
-  name: "MK BASES Box",
-  segment: "Bases e colchões",
-  city: "Santa Luzia – MG",
-  address: "R. Pres. Artur Bernardes, 386 – Boa Esperança – Santa Luzia – MG",
-  instagram: "https://www.instagram.com/mkbasesbox",
-  email: "mkbasesbox@gmail.com"
-};
 
 const PROVIDER = {
   name: "Future Agency Technology",
   whatsapp: "31 99449-9024",
   email: "futuretecnology@yahoo.com",
-  instagram: "https://www.instagram.com/p/DOyfsE1Dufa/",
   cnpj: "59.627.142/0001-26"
 };
 
-const LOSS_ESTIMATE_DATA = [
-  { year: '2022', loss: 45000 },
-  { year: '2023', loss: 82000 },
-  { year: '2024 (Projetado)', loss: 125000 },
-];
+interface BrazilIconProps {
+  size?: number;
+  className?: string;
+}
 
-const PERFORMANCE_DATA = [
-  { name: 'Velocidade', score: 98 },
-  { name: 'Acessibilidade', score: 100 },
-  { name: 'Best Practices', score: 100 },
-  { name: 'SEO', score: 100 },
-];
+const BrazilIcon: React.FC<BrazilIconProps> = ({ size = 24, className = "" }) => (
+  <svg width={size} height={size} viewBox="0 0 100 70" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <rect width="100" height="70" fill="#009739"/>
+    <path d="M50 5L95 35L50 65L5 35L50 5Z" fill="#FED100"/>
+    <circle cx="50" cy="35" r="18" fill="#002776"/>
+    <path d="M32 38C40 33 60 33 68 38" stroke="white" strokeWidth="2" fill="none"/>
+  </svg>
+);
 
-const PLANS: PlanItem[] = [
-  {
-    title: "Plano Profissional",
-    price: "R$ 3.000,00",
-    features: [
-      "Site Institucional Tecnológico",
-      "Arquitetura de Alta Performance",
-      "Até 6 páginas estratégicas",
-      "Otimização Core Web Vitals",
-      "Integração Google Business Profile",
-      "Certificado SSL Blindado"
-    ]
-  },
-  {
-    title: "Plano Estratégico Premium",
-    price: "R$ 3.400,00",
-    highlight: "Indicado pela Agência",
-    recommended: true,
-    features: [
-      "Tudo do Plano Profissional",
-      "Catálogo Digital Inteligente",
-      "Painel Adm (Full Autonomy)",
-      "SEO Local de Domínio",
-      "Integração de Chat Inteligente",
-      "Mapa Interativo de Região",
-      "Treinamento de Gestão Digital"
-    ]
-  },
-  {
-    title: "Plano Futuro Scale",
-    price: "R$ 4.900,00",
-    features: [
-      "Plataforma E-commerce Full",
-      "Checkout Transparente",
-      "IA de Recomendação de Produtos",
-      "Funil de Vendas Automatizado",
-      "Infraestrutura AWS/Cloudflare",
-      "Setup de Tráfego Pago (Google Ads)",
-      "Monitoramento Mensal VIP"
-    ]
-  }
-];
-
-const Section: React.FC<{ children: React.ReactNode; id?: string; className?: string; dark?: boolean }> = ({ 
-  children, id, className = "", dark = false 
-}) => (
-  <section id={id} className={`py-16 md:py-24 px-6 md:px-12 ${dark ? 'bg-slate-950 text-white' : 'bg-white'} ${className}`}>
-    <div className="max-w-7xl mx-auto">
+const Section = ({ children, className = "", id = "" }: any) => (
+  <section id={id} className={`py-16 md:py-32 px-5 md:px-6 relative overflow-hidden ${className}`}>
+    <div className="max-w-6xl mx-auto relative z-10">
       {children}
     </div>
   </section>
 );
 
 const App: React.FC = () => {
-  const [copied, setCopied] = useState(false);
+  const [timeLeft, setTimeLeft] = useState({ h: 23, m: 59, s: 59 });
+  const [activeStep, setActiveStep] = useState(0);
 
-  const handleWhatsApp = (planTitle?: string) => {
-    const text = planTitle 
-      ? `Olá! Sou da MK BASES Box e quero fechar o ${planTitle} com o desconto de 10%!`
-      : `Olá! Sou da MK BASES Box e quero iniciar minha transformação digital.`;
-    window.open(`https://wa.me/55${PROVIDER.whatsapp.replace(/\D/g,'')}?text=${encodeURIComponent(text)}`, '_blank');
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev.s > 0) return { ...prev, s: prev.s - 1 };
+        if (prev.m > 0) return { ...prev, m: prev.m - 1, s: 59 };
+        if (prev.h > 0) return { h: prev.h - 1, m: 59, s: 59 };
+        return prev;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleWhatsApp = (action?: string) => {
+    const baseMsg = "Olá! Vi a proposta de E-commerce Nacional.";
+    const promo = "Quero marcar a reunião agora e garantir meus 10% de desconto.";
+    const msg = action ? `${baseMsg} Ação: ${action}. ${promo}` : `${baseMsg} ${promo}`;
+    window.open(`https://wa.me/5531994499024?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(window.location.href);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  const PROCESS_STEPS = [
+    { title: "Arquitetura", icon: <Target />, desc: "Análise de mercado e estruturação de jornada de compra para MK Bases." },
+    { title: "Design Elite", icon: <PenTool />, desc: "Interface exclusiva focada em luxo, confiança e facilidade de checkout." },
+    { title: "Engenharia", icon: <Code />, desc: "Código limpo e ultra veloz para carregamento instantâneo em todo o país." },
+    { title: "Escalabilidade", icon: <Rocket />, desc: "Integração logística nacional e automação completa de vendas 24/7." }
+  ];
 
   return (
-    <div className="min-h-screen bg-white selection:bg-blue-100 selection:text-blue-900">
-      {/* Dynamic Nav - Glassmorphism */}
-      <nav className="no-print fixed top-0 w-full z-[100] px-6 py-4">
-        <div className="max-w-7xl mx-auto glass rounded-2xl px-6 py-3 flex items-center justify-between shadow-2xl border border-white/20">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center text-white font-black text-xl shadow-lg shadow-blue-500/30">F</div>
-            <span className="font-extrabold text-lg tracking-tighter text-slate-900 md:block hidden">FUTURE <span className="text-blue-600">AGENCY</span></span>
+    <div className="min-h-screen text-slate-200 bg-[#010409]">
+      {/* Navbar Otimizada Mobile */}
+      <nav className="fixed top-4 md:top-8 w-full z-[100] px-4 md:px-12 no-print">
+        <div className="max-w-6xl mx-auto glass-card rounded-full px-5 md:px-8 py-3 md:py-4 flex items-center justify-between border border-white/10 shadow-2xl">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-black text-base md:text-xl shadow-lg ring-2 ring-blue-500/20">F</div>
+            <span className="font-bold text-sm md:text-xl tracking-tighter text-white uppercase italic">Future <span className="text-blue-500">Agency</span></span>
           </div>
-          <div className="flex items-center gap-6">
-            <div className="hidden md:flex items-center gap-6 text-xs font-bold uppercase tracking-widest text-slate-500">
-              <a href="#diagnostico" className="hover:text-blue-600 transition-colors">Diagnóstico</a>
-              <a href="#futuro" className="hover:text-blue-600 transition-colors">Tecnologia</a>
-              <a href="#planos" className="hover:text-blue-600 transition-colors">Planos</a>
-            </div>
-            <button 
-              onClick={() => handleWhatsApp('FECHAMENTO AGORA')}
-              className="bg-slate-950 text-white px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-blue-600 transition-all flex items-center gap-2 shadow-xl"
-            >
-              FECHAR HOJE
-            </button>
-          </div>
+          <button 
+            onClick={() => handleWhatsApp('MARCAR REUNIÃO AGORA')} 
+            className="bg-white text-black px-4 md:px-10 py-2 md:py-2.5 rounded-full text-[10px] md:text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 hover:text-white active:scale-95 transition-all shadow-xl"
+          >
+            REUNIÃO <span className="hidden xs:inline">AGORA</span>
+          </button>
         </div>
       </nav>
 
-      {/* Hero Header - Ultra Tech */}
-      <header className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-dark-mesh text-white px-6">
-        <div className="absolute inset-0 tech-grid opacity-30"></div>
-        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px]"></div>
+      {/* Hero: Ajuste de Impacto Mobile */}
+      <header className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-24 pb-20 overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] md:w-[1000px] h-[350px] md:h-[1000px] bg-blue-600/15 rounded-full blur-[90px] md:blur-[200px] animate-pulse"></div>
         
-        <div className="relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 mb-8 glass rounded-full border border-blue-500/30 text-blue-400 text-[10px] font-bold uppercase tracking-[0.3em]">
-            <Rocket size={14} /> High-End Digital Experience
+        <div className="relative z-10 max-w-5xl">
+          <div className="inline-flex items-center gap-2 px-5 md:px-6 py-2 md:py-2 mb-8 md:mb-12 glass-card rounded-full text-blue-400 text-[9px] md:text-xs font-black uppercase tracking-[0.25em] md:tracking-[0.5em] float-animation ring-1 ring-blue-500/20">
+            <Globe size={14} className="md:size-[16px]" /> LOGÍSTICA PARA TODO O BRASIL
           </div>
-          <h1 className="text-6xl md:text-[7rem] font-black mb-6 leading-[0.9] tracking-tighter">
-            O FUTURO DA <br />
-            <span className="gradient-text">MK BASES Box</span>
-          </h1>
-          <p className="text-xl md:text-3xl text-slate-400 max-w-3xl mx-auto mb-16 font-light leading-relaxed">
-            A análise de mercado confirma: <span className="text-white font-medium">Sua concorrência já domina o Google</span>. É hora de retomar seu espaço com tecnologia de vanguarda.
-          </p>
           
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8">
-             <div className="flex items-center gap-5 p-6 glass rounded-3xl border border-white/5 float">
-                <div className="w-14 h-14 bg-blue-600/20 rounded-2xl flex items-center justify-center text-blue-500 border border-blue-500/30">
-                  <Cpu size={30} />
-                </div>
-                <div className="text-left">
-                  <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">Tecnologia</p>
-                  <p className="text-lg font-bold">Arquitetura Next-Gen</p>
-                </div>
-             </div>
-             <div className="flex items-center gap-5 p-6 glass rounded-3xl border border-white/5 float" style={{animationDelay: '1s'}}>
-                <div className="w-14 h-14 bg-purple-600/20 rounded-2xl flex items-center justify-center text-purple-500 border border-purple-500/30">
-                  <TrendingUp size={30} />
-                </div>
-                <div className="text-left">
-                  <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">Impacto</p>
-                  <p className="text-lg font-bold">+100k Faturamento Est.</p>
-                </div>
-             </div>
-          </div>
-        </div>
+          <h1 className="text-4xl sm:text-6xl md:text-[8rem] font-black mb-6 md:mb-10 leading-[1.05] md:leading-[0.85] tracking-tighter text-white uppercase italic">
+            LOJA ABERTA <br />
+            <span className="gradient-text">PARA TODO O PAÍS.</span>
+          </h1>
+          
+          <p className="text-base sm:text-lg md:text-3xl text-slate-300 max-w-4xl mx-auto mb-10 md:mb-20 leading-relaxed md:leading-tight font-light italic opacity-90">
+            Hoje, sem um site online, seu negócio está limitado às paredes da loja física. Enquanto você dorme, clientes de todo o <span className="text-white font-bold underline decoration-blue-500/50">Brasil</span> pesquisam seu produto e compram do concorrente.
+          </p>
 
-        <div className="absolute bottom-12 flex flex-col items-center gap-3 animate-pulse">
-           <span className="text-[10px] uppercase tracking-[0.5em] font-bold text-slate-500">Scroll down</span>
-           <ChevronRight size={24} className="rotate-90 text-blue-500" />
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-5">
+            <button 
+              onClick={() => handleWhatsApp('REUNIÃO AGORA')}
+              className="w-full sm:w-auto bg-blue-600 text-white px-10 md:px-14 py-5 md:py-8 rounded-2xl md:rounded-[3rem] font-black text-xs md:text-sm uppercase tracking-[0.2em] md:tracking-[0.3em] shadow-[0_20px_50px_rgba(59,130,246,0.4)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 md:gap-4"
+            >
+              MARCAR REUNIÃO AGORA <Zap size={16} className="md:size-[20px]" />
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Critical Market Diagnosis */}
-      <Section id="diagnostico" className="bg-white">
-        <div className="grid md:grid-cols-2 gap-20 items-center">
-          <div>
-            <span className="text-blue-600 font-black uppercase tracking-[0.3em] text-xs">Market Diagnosis</span>
-            <h2 className="text-5xl font-extrabold mt-6 mb-8 text-slate-900 leading-tight">Você está perdendo terreno para a concorrência</h2>
-            <p className="text-slate-600 text-lg mb-8 leading-relaxed">
-              Realizamos uma auditoria profunda no mercado de <strong>Santa Luzia e BH</strong>. O resultado é alarmante: 85% dos seus concorrentes diretos investiram em sites modernos no último ano.
+      {/* Seção Institucional: Melhoria de Escala Mobile */}
+      <Section className="bg-white/[0.01] border-y border-white/5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 items-center">
+          <div className="order-2 lg:order-1">
+            <span className="text-blue-500 font-black uppercase tracking-[0.4em] text-[10px] mb-4 block italic">Future Agency Technology</span>
+            <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-white italic tracking-tighter uppercase leading-tight mb-8 md:mb-10">Especialistas em <br/><span className="text-blue-500">Engenharia Digital.</span></h2>
+            <p className="text-base sm:text-lg md:text-xl text-slate-400 leading-relaxed font-light mb-8 md:mb-8 italic">
+              Não somos apenas desenvolvedores; somos estrategistas de conversão. Na <span className="text-white font-bold">Future Agency</span>, entendemos que um site para o setor de colchões e bases exige um equilíbrio perfeito entre estética aspiracional e robustez logística.
             </p>
-            <div className="space-y-6">
-               <div className="flex gap-4 p-6 bg-red-50 rounded-3xl border border-red-100">
-                  <AlertCircle className="text-red-600 flex-shrink-0" size={24} />
-                  <div>
-                    <h4 className="font-bold text-red-900 mb-1">Perda de R$ 100k+ Anuais</h4>
-                    <p className="text-sm text-red-700">Estimativa baseada em buscas não convertidas por falta de uma página qualificada e tecnológica.</p>
-                  </div>
-               </div>
-               <div className="flex gap-4 p-6 bg-slate-900 rounded-3xl border border-slate-800 text-white">
-                  <Search className="text-blue-400 flex-shrink-0" size={24} />
-                  <div>
-                    <h4 className="font-bold mb-1">Invisibilidade Digital</h4>
-                    <p className="text-sm text-slate-400">Sem um site, a MK BASES Box é invisível para o cliente que decide a compra no Google antes de sair de casa.</p>
-                  </div>
-               </div>
+            
+            <div className="grid grid-cols-2 gap-5">
+              <div className="p-5 md:p-6 glass-card rounded-2xl md:rounded-3xl border border-white/10">
+                <span className="block text-2xl md:text-3xl font-black text-white italic mb-1">+10 ANOS</span>
+                <span className="text-[8px] md:text-[10px] uppercase font-bold text-slate-500 tracking-widest">Expertise Digital</span>
+              </div>
+              <div className="p-5 md:p-6 glass-card rounded-2xl md:rounded-3xl border border-white/10">
+                <span className="block text-2xl md:text-3xl font-black text-white italic">ELITE</span>
+                <span className="text-[8px] md:text-[10px] uppercase font-bold text-slate-500 tracking-widest">Time Especialista</span>
+              </div>
             </div>
-          </div>
-          <div className="relative">
-             <div className="bg-slate-50 p-8 rounded-[3rem] border border-slate-200">
-                <h3 className="font-bold text-slate-900 mb-8 flex items-center gap-2">
-                  <BarChart3 className="text-blue-600" /> Projeção de Perda Cumulativa
-                </h3>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={LOSS_ESTIMATE_DATA}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                      <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#64748b'}} />
-                      <YAxis axisLine={false} tickLine={false} tick={{fontSize: 12, fill: '#64748b'}} />
-                      <Tooltip 
-                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}
-                        cursor={{fill: '#f1f5f9'}}
-                      />
-                      <Bar dataKey="loss" fill="#ef4444" radius={[8, 8, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="mt-8 pt-8 border-t border-slate-200 grid grid-cols-2 gap-4">
-                   <div className="text-center">
-                     <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Buscas/Mês</p>
-                     <p className="text-2xl font-bold text-slate-900">4.5k+</p>
-                   </div>
-                   <div className="text-center">
-                     <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Taxa Rejeição</p>
-                     <p className="text-2xl font-bold text-red-600">89%</p>
-                   </div>
-                </div>
-             </div>
-          </div>
-        </div>
-      </Section>
-
-      {/* Tech Stack */}
-      <Section id="futuro" className="bg-slate-950 text-white overflow-hidden relative">
-         <div className="absolute top-0 left-0 w-full h-full tech-grid opacity-10"></div>
-         <div className="relative z-10">
-            <div className="text-center max-w-3xl mx-auto mb-20">
-              <span className="text-blue-400 font-black uppercase tracking-[0.3em] text-xs">Vanguarda Tecnológica</span>
-              <h2 className="text-5xl font-extrabold mt-6 mb-8 leading-tight">Construído com o que há de mais moderno no planeta</h2>
-              <p className="text-slate-400 text-lg">
-                Não entregamos um site comum. Entregamos uma aplicação web de alta performance que carrega instantaneamente.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-4 gap-6">
-               {[
-                 { title: "Ultra Velocidade", desc: "Site carrega em menos de 1s, essencial para mobile.", icon: <Zap /> },
-                 { title: "SEO Semântico", desc: "Indexação agressiva para dominar as buscas locais.", icon: <Layers /> },
-                 { title: "UX Imersiva", desc: "Design focado em levar o cliente direto ao WhatsApp.", icon: <MousePointer2 /> },
-                 { title: "Segurança Cloud", desc: "Hospedagem em nuvem com proteção contra ataques.", icon: <Lock /> },
-               ].map((item, i) => (
-                 <div key={i} className="p-8 glass rounded-[2.5rem] border border-white/5 hover:border-blue-500/50 transition-all group">
-                   <div className="w-14 h-14 bg-blue-600/10 rounded-2xl flex items-center justify-center text-blue-400 mb-6 group-hover:scale-110 transition-transform">
-                     {item.icon}
-                   </div>
-                   <h4 className="text-xl font-bold mb-3">{item.title}</h4>
-                   <p className="text-sm text-slate-400 leading-relaxed">{item.desc}</p>
-                 </div>
-               ))}
-            </div>
-
-            <div className="mt-20 p-12 glass rounded-[3rem] border border-white/10 flex flex-col md:flex-row items-center gap-12">
-               <div className="flex-1">
-                  <h3 className="text-3xl font-bold mb-6 flex items-center gap-3">
-                    <Award className="text-yellow-500" /> Meta: 100/100 Lighthouse
-                  </h3>
-                  <p className="text-slate-400 mb-8">
-                    Garantimos que seu site terá pontuação máxima nas ferramentas do Google. Isso faz com que você pague menos em anúncios e apareça em primeiro no orgânico.
-                  </p>
-                  <div className="flex flex-wrap gap-4">
-                    {PERFORMANCE_DATA.map((d, i) => (
-                      <div key={i} className="px-4 py-2 bg-white/5 rounded-full border border-white/10 flex items-center gap-2">
-                        <CheckCircle2 size={14} className="text-green-400" />
-                        <span className="text-xs font-bold uppercase tracking-widest">{d.name}: {d.score}</span>
-                      </div>
-                    ))}
-                  </div>
-               </div>
-               <div className="w-full md:w-1/3 aspect-square relative flex items-center justify-center">
-                  <div className="absolute inset-0 bg-blue-600/20 blur-[60px] animate-pulse"></div>
-                  <div className="relative w-48 h-48 rounded-full border-8 border-blue-500 flex flex-col items-center justify-center">
-                     <span className="text-6xl font-black">100</span>
-                     <span className="text-[10px] uppercase font-bold tracking-widest text-blue-300">Performance</span>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </Section>
-
-      {/* Pricing */}
-      <Section id="planos" className="bg-slate-50 relative">
-        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-slate-950 to-transparent"></div>
-        <div className="relative z-10">
-          <div className="text-center mb-20">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-full text-[10px] font-bold uppercase tracking-[0.2em] mb-6 shadow-xl shadow-red-500/20">
-              <Clock size={14} /> Oferta Limitada: Apenas 2 vagas p/ Santa Luzia este mês
-            </div>
-            <h2 className="text-5xl font-extrabold text-slate-900 mb-6">Investimento & ROI</h2>
-            <p className="text-slate-500 text-lg max-w-2xl mx-auto">
-              Cada plano é desenhado para um estágio de crescimento. Recomendamos o <span className="text-blue-600 font-bold">Estratégico Premium</span> para dominar o mercado regional.
-            </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8 items-stretch">
-            {PLANS.map((plan, i) => (
-              <div 
-                key={i} 
-                className={`relative bg-white p-12 rounded-[3rem] border-2 ${plan.recommended ? 'border-blue-500 shadow-[0_40px_80px_-15px_rgba(37,99,235,0.2)] scale-105 z-10' : 'border-slate-100 shadow-xl shadow-slate-200/50'} transition-all flex flex-col group`}
-              >
-                {plan.highlight && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[10px] font-bold uppercase tracking-[0.2em] px-8 py-2.5 rounded-full shadow-2xl flex items-center gap-2">
-                    <Star size={14} className="fill-white" /> {plan.highlight}
-                  </div>
-                )}
-                <h3 className="text-2xl font-black mb-1 text-slate-900 tracking-tighter uppercase">{plan.title}</h3>
-                <p className="text-4xl font-black text-blue-600 mb-8 tracking-tighter">{plan.price}</p>
-                
-                <div className="space-y-4 mb-12 flex-grow">
-                  {plan.features.map((feature, j) => (
-                    <div key={j} className="flex items-start gap-3 text-sm">
-                      <div className="mt-1 w-1.5 h-1.5 rounded-full bg-blue-600 flex-shrink-0"></div>
-                      <span className="text-slate-600 leading-tight font-medium">{feature}</span>
+          <div className="relative order-1 lg:order-2">
+            <div className="relative glass-card p-7 md:p-12 rounded-[2rem] md:rounded-[4rem] border border-white/10 overflow-hidden bg-gradient-to-b from-white/[0.03] to-transparent">
+              <h3 className="text-white font-black text-xl md:text-2xl mb-8 md:mb-8 uppercase italic tracking-tighter">O Diferencial Técnico</h3>
+              <div className="space-y-6 md:space-y-8">
+                {[
+                  { t: "SEO de Alta Intencionalidade", d: "Capturamos o cliente no momento exato da intenção de compra." },
+                  { t: "Performance de Vanguarda", d: "Arquitetura ultra-veloz otimizada para conexões móveis 4G/5G." },
+                  { t: "Conversão Estratégica", d: "Design focado em reduzir atritos e aumentar o ticket médio." }
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-5 items-start group">
+                    <div className="bg-blue-600/10 p-2 rounded-lg group-hover:bg-blue-600 transition-colors">
+                      <CheckCircle2 className="text-blue-500 group-hover:text-white shrink-0" size={20} />
                     </div>
-                  ))}
-                </div>
-                
-                <button 
-                  onClick={() => handleWhatsApp(plan.title)}
-                  className={`w-full py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-3 ${plan.recommended ? 'bg-blue-600 text-white hover:bg-blue-700 hover:shadow-2xl hover:shadow-blue-500/40' : 'bg-slate-900 text-white hover:bg-blue-600'}`}
-                >
-                  <MessageCircle size={18} />
-                  Solicitar este plano
-                </button>
+                    <div>
+                      <h4 className="text-white font-bold text-base md:text-lg mb-1 italic">{item.t}</h4>
+                      <p className="text-xs md:text-xs text-slate-500 leading-relaxed font-medium">{item.d}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-
-          {/* Discount Section */}
-          <div className="mt-20 max-w-5xl mx-auto">
-             <div className="relative overflow-hidden bg-slate-900 rounded-[3.5rem] p-1 shadow-3xl">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-green-500/20 blur-[80px]"></div>
-                <div className="bg-slate-900/40 backdrop-blur-xl p-10 md:p-16 rounded-[3.4rem] flex flex-col md:flex-row items-center gap-12 border border-white/10">
-                   <div className="flex-1">
-                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-[10px] font-black uppercase tracking-widest mb-6">
-                        <Tag size={14} /> Flash Deal - MK BASES Box Special
-                      </div>
-                      <h4 className="text-4xl font-extrabold text-white mb-6">Fechamento Prioritário: -10% de Desconto</h4>
-                      <p className="text-slate-400 text-lg leading-relaxed">
-                        Entendemos a urgência da <span className="text-white font-bold">MK BASES Box</span> em recuperar o tempo perdido. Por isso, oferecemos 10% de desconto para contratos assinados nas próximas 24 horas.
-                      </p>
-                   </div>
-                   <div className="flex-shrink-0">
-                      <button 
-                        onClick={() => handleWhatsApp('DESCONTO 10% HOJE')}
-                        className="bg-green-500 hover:bg-green-400 text-slate-950 px-10 py-8 rounded-[2rem] font-black text-xl shadow-2xl shadow-green-500/20 transition-all flex flex-col items-center group scale-100 hover:scale-105"
-                      >
-                        <span className="tracking-tighter uppercase">Ativar Cupom -10%</span>
-                        <span className="text-xs opacity-70 font-bold uppercase tracking-[0.2em] mt-1">Clique para fechar agora</span>
-                      </button>
-                   </div>
-                </div>
-             </div>
+            </div>
           </div>
         </div>
       </Section>
 
-      {/* ROI */}
-      <Section className="bg-white">
-         <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div className="bg-slate-50 p-12 rounded-[4rem] border border-slate-100">
-               <h3 className="text-3xl font-black mb-8 text-slate-900">Como o site se paga?</h3>
-               <div className="space-y-6">
-                  <div className="flex items-center justify-between p-6 bg-white rounded-3xl shadow-sm border border-slate-100">
-                     <span className="text-slate-500 font-bold">Investimento Sugerido</span>
-                     <span className="text-xl font-black text-blue-600">R$ 3.400</span>
-                  </div>
-                  <div className="flex items-center justify-between p-6 bg-white rounded-3xl shadow-sm border border-slate-100">
-                     <span className="text-slate-500 font-bold">Preço Médio Conjunto Box</span>
-                     <span className="text-xl font-black text-slate-900">R$ 1.800</span>
-                  </div>
-                  <div className="p-8 bg-blue-600 rounded-3xl text-white text-center shadow-2xl shadow-blue-500/30">
-                     <p className="text-xs font-bold uppercase tracking-[0.2em] mb-2 opacity-80">Ponto de Equilíbrio</p>
-                     <p className="text-4xl font-black tracking-tighter">Apenas 2 vendas</p>
-                     <p className="text-[11px] mt-4 font-medium opacity-90">Com apenas 2 vendas vindas do Google, sua estrutura digital já está totalmente paga. Todo o restante é lucro direto para a MK BASES Box.</p>
-                  </div>
-               </div>
+      {/* Nosso Processo Interativo: Melhoria Mobile */}
+      <Section id="processo">
+        <div className="text-center mb-12 md:mb-24">
+          <span className="text-blue-500 font-black uppercase tracking-[0.4em] text-[10px] mb-4 block italic">Como Trabalhamos</span>
+          <h2 className="text-3xl sm:text-4xl md:text-8xl font-black text-white italic tracking-tighter uppercase leading-tight">Nosso Fluxo de <br/><span className="gradient-text">Construção.</span></h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          {PROCESS_STEPS.map((step, i) => (
+            <div 
+              key={i} 
+              onClick={() => setActiveStep(i)}
+              className={`interactive-step p-6 md:p-10 rounded-2xl md:rounded-[3rem] glass-card transition-all cursor-pointer border-2 shadow-lg ${activeStep === i ? 'border-blue-600 bg-blue-600/10 scale-[1.02]' : 'border-transparent hover:border-white/10'}`}
+            >
+              <div className={`${activeStep === i ? 'text-white' : 'text-blue-500'} mb-4 md:mb-6 transition-transform duration-500 ${activeStep === i ? 'scale-110' : ''}`}>
+                {React.cloneElement(step.icon as React.ReactElement, { size: 36 })}
+              </div>
+              <h4 className="text-white font-black text-base md:text-xl mb-2 md:mb-3 uppercase italic tracking-tighter">{step.title}</h4>
+              <p className={`text-xs md:text-sm leading-relaxed font-medium ${activeStep === i ? 'text-slate-200' : 'text-slate-500'}`}>{step.desc}</p>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* O Prejuízo: Ajuste Mobile */}
+      <Section className="bg-white/[0.02]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-24 items-center">
+          <div>
+            <div className="inline-flex items-center gap-2 mb-5 text-red-500 font-black uppercase tracking-widest text-[10px] md:text-xs">
+              <AlertCircle size={14} /> ALERTA DE MERCADO
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-7xl font-black mb-8 text-white leading-tight tracking-tighter italic uppercase">O Prejuízo de <br/><span className="text-red-500">estar invisível.</span></h2>
+            <p className="text-base sm:text-lg md:text-2xl text-slate-400 leading-relaxed font-light mb-10 italic">
+              Estar fora do Google e não ter um e-commerce é ver seu estoque parado enquanto o Brasil inteiro compra online. O custo de oportunidade é imensurável.
+            </p>
+            
+            <div className="space-y-5">
+              <div className="glass-card p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] flex gap-5 border-l-4 border-l-red-600 shadow-xl">
+                <TrendingDown className="text-red-600 shrink-0" size={28} />
+                <div>
+                  <h4 className="text-white font-black text-base md:text-xl italic uppercase">Inexistência Digital</h4>
+                  <p className="text-xs md:text-sm text-slate-500 leading-relaxed font-medium">Se o cliente não te encontra no celular, ele compra do concorrente em segundos.</p>
+                </div>
+              </div>
+              <div className="glass-card p-6 md:p-8 rounded-2xl md:rounded-[2.5rem] flex gap-5 border-l-4 border-l-blue-600 shadow-xl">
+                <Clock className="text-blue-600 shrink-0" size={28} />
+                <div>
+                  <h4 className="text-white font-black text-base md:text-xl italic uppercase">Venda Limitada</h4>
+                  <p className="text-xs md:text-sm text-slate-500 leading-relaxed font-medium">Sua loja física fecha. O seu e-commerce vende 24 horas por dia, 365 dias por ano.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="relative text-center glass-card p-10 md:p-20 rounded-3xl md:rounded-[4rem] border border-white/10 shadow-inner">
+            <Monitor size={50} md:size={64} className="mx-auto text-blue-500 mb-8" />
+            <h3 className="text-white font-black text-2xl md:text-5xl italic tracking-tighter uppercase mb-6 leading-none">Presença <br/>Nacional</h3>
+            <p className="text-slate-400 text-sm md:text-lg font-medium leading-relaxed mb-8 italic">
+              Venda para qualquer estado do Brasil com a segurança de uma plataforma profissional projetada para escala.
+            </p>
+            <div className="flex justify-center gap-3">
+              {[1, 2, 3].map(i => <BrazilIcon key={i} size={24} className="opacity-60" />)}
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* CTA Final: Impacto Mobile Reforçado */}
+      <Section>
+        <div className="relative glass-card bg-gradient-to-br from-blue-900/50 via-black to-black p-10 md:p-24 rounded-[2.5rem] md:rounded-[5rem] border-2 border-blue-500/20 text-center overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.6)]">
+          <div className="absolute top-0 right-0 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-blue-600/10 rounded-full blur-[110px] md:blur-[150px] animate-pulse"></div>
+          
+          <div className="relative z-10">
+            <div className="inline-flex items-center gap-3 px-6 py-2.5 bg-white text-black rounded-full text-[10px] md:text-[11px] font-black uppercase tracking-widest mb-10 md:mb-12 ring-4 ring-white/10">
+              <Gift size={16} /> EXCLUSIVO MK BASES BOX
+            </div>
+            
+            <h2 className="text-4xl sm:text-5xl md:text-[9rem] font-black text-white mb-8 md:mb-10 italic tracking-tighter leading-none uppercase">
+              GANHE <span className="text-blue-500">10% OFF</span> <br className="hidden md:block"/> FECHANDO HOJE
+            </h2>
+            
+            <p className="text-base sm:text-xl md:text-3xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-light mb-12 md:mb-16 italic opacity-90">
+              Sua expansão nacional começa com uma decisão estratégica. Marque sua reunião agora e garanta sua oferta especial limitada.
+            </p>
+            
+            <div className="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-10">
+              <button 
+                onClick={() => handleWhatsApp('REUNIÃO AGORA')} 
+                className="w-full md:w-auto bg-blue-600 text-white px-10 md:px-16 py-5 md:py-10 rounded-2xl md:rounded-[3rem] font-black text-lg md:text-4xl shadow-2xl transition-all hover:scale-105 active:scale-95 uppercase tracking-tighter italic flex items-center justify-center gap-4 md:gap-6"
+              >
+                MARCAR REUNIÃO <MessageCircle size={24} md:size={40} />
+              </button>
+              
+              <div className="glass-card px-10 py-5 rounded-2xl md:rounded-3xl border-white/10 w-full md:w-auto">
+                <p className="text-[9px] md:text-[11px] text-slate-500 font-black uppercase mb-1 tracking-widest">Oferta expira em:</p>
+                <div className="text-white font-black text-2xl md:text-4xl italic tracking-tighter">
+                  {String(timeLeft.h).padStart(2, '0')}:{String(timeLeft.m).padStart(2, '0')}:{String(timeLeft.s).padStart(2, '0')}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      {/* Footer Refinado */}
+      <footer className="py-20 md:py-32 px-6 bg-black/80 text-center border-t border-white/5">
+        <div className="max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-16">
+            <div>
+              <p className="text-blue-500 text-[10px] font-black uppercase tracking-widest mb-3">WhatsApp</p>
+              <p className="text-white font-black text-lg md:text-xl italic">{PROVIDER.whatsapp}</p>
             </div>
             <div>
-               <span className="text-blue-600 font-black uppercase tracking-[0.3em] text-xs">Visão de Futuro</span>
-               <h2 className="text-5xl font-extrabold mt-6 mb-8 text-slate-900">Escalabilidade & Domínio Regional</h2>
-               <p className="text-slate-600 text-lg mb-8 leading-relaxed">
-                 O objetivo final é transformar a <span className="font-bold text-slate-900">MK BASES Box</span> na maior referência de bases e colchões do Vetor Norte. Com nossa tecnologia, você terá os dados e a estrutura para expandir para todo o estado.
-               </p>
-               <div className="grid grid-cols-2 gap-6">
-                  <div className="p-6 bg-slate-50 rounded-3xl border border-slate-200">
-                    <Eye className="text-blue-600 mb-4" />
-                    <h5 className="font-bold mb-2">Visibilidade</h5>
-                    <p className="text-xs text-slate-500 leading-relaxed">Sua marca presente onde o cliente estiver buscando.</p>
-                  </div>
-                  <div className="p-6 bg-slate-50 rounded-3xl border border-slate-200">
-                    <ShieldCheck className="text-blue-600 mb-4" />
-                    <h5 className="font-bold mb-2">Autoridade</h5>
-                    <p className="text-xs text-slate-500 leading-relaxed">Transmitir confiança para fechar compras de alto ticket.</p>
-                  </div>
-               </div>
+              <p className="text-blue-500 text-[10px] font-black uppercase tracking-widest mb-3">E-mail</p>
+              <p className="text-white font-black text-sm md:text-lg italic truncate px-2">{PROVIDER.email}</p>
             </div>
-         </div>
-      </Section>
-
-      {/* Footer Closing */}
-      <Section className="bg-slate-950 text-white text-center relative overflow-hidden">
-        <div className="absolute inset-0 tech-grid opacity-10"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[150px]"></div>
-        
-        <div className="relative z-10 max-w-4xl mx-auto py-20">
-          <p className="text-blue-400 font-black uppercase tracking-[0.5em] text-xs mb-12">Final Statement</p>
-          <h2 className="text-4xl md:text-6xl font-black mb-16 tracking-tighter leading-tight italic">
-            "O SUCESSO NO DIGITAL NÃO É SORTE, <br /> É TECNOLOGIA E ESTRATÉGIA."
-          </h2>
-          
-          <div className="inline-flex flex-col items-center gap-6 glass p-12 rounded-[4rem] border border-white/10 mb-20 shadow-3xl">
-             <div className="flex flex-col md:flex-row items-center gap-12">
-               <div className="text-left cursor-pointer group" onClick={() => handleWhatsApp()}>
-                  <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-2 group-hover:text-blue-400 transition-colors">Immediate Contact</p>
-                  <p className="text-3xl font-black tracking-tighter">{PROVIDER.whatsapp}</p>
-               </div>
-               <div className="w-px h-16 bg-white/10 hidden md:block"></div>
-               <div className="text-left">
-                  <p className="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-2">Professional Inquiry</p>
-                  <p className="text-2xl font-black tracking-tighter lowercase">{PROVIDER.email}</p>
-               </div>
-             </div>
-             <div className="mt-8 pt-8 border-t border-white/5 w-full flex flex-col items-center">
-                <span className="text-[9px] uppercase tracking-[0.4em] font-black text-slate-600">CNPJ: {PROVIDER.cnpj} | Future Agency Tech © 2024</span>
-             </div>
+            <div>
+              <p className="text-blue-500 text-[10px] font-black uppercase tracking-widest mb-3">Registro</p>
+              <p className="text-white font-bold text-[10px] md:text-sm tracking-widest opacity-60">{PROVIDER.cnpj}</p>
+            </div>
+          </div>
+          <div className="flex items-center justify-center gap-4 text-slate-800 text-[10px] md:text-[12px] font-black uppercase tracking-[0.4em] md:tracking-[0.8em] italic">
+            <BrazilIcon size={16} /> FUTURE AGENCY TECHNOLOGY • © 2024
           </div>
         </div>
-      </Section>
+      </footer>
 
-      {/* Floating Action Bar */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 no-print z-[100] flex gap-4">
-        <button 
-          onClick={() => handleWhatsApp('FECHAMENTO AGORA')}
-          className="bg-green-500 text-slate-950 px-10 py-5 rounded-2xl shadow-[0_20px_50px_rgba(34,197,94,0.4)] hover:bg-green-400 transition-all flex items-center gap-3 scale-100 hover:scale-105"
-        >
-          <MessageCircle size={24} className="fill-slate-950" />
-          <span className="font-black text-sm uppercase tracking-widest">Ativar Desconto -10% HOJE</span>
-        </button>
-        
-        <button 
-          onClick={copyToClipboard}
-          className={`px-8 py-5 rounded-2xl shadow-2xl transition-all flex items-center gap-3 scale-100 hover:scale-105 ${copied ? 'bg-blue-600 text-white' : 'bg-slate-900 text-white'}`}
-        >
-          {copied ? <Check size={22} /> : <Copy size={22} />}
-          <span className="font-black text-sm uppercase tracking-widest">
-            {copied ? 'Link Copiado!' : 'Copiar Link da Proposta'}
-          </span>
-        </button>
+      {/* Floating Action Bar: Mobile Ergonômico */}
+      <div className="fixed bottom-6 md:bottom-10 w-full z-[120] px-6 md:px-12 no-print pointer-events-none">
+        <div className="max-w-md mx-auto flex gap-4 pointer-events-auto">
+          <button 
+            onClick={() => handleWhatsApp('RESGATAR 10% OFF')} 
+            className="flex-1 bg-white text-black py-4 md:py-8 px-6 md:px-10 rounded-[1.75rem] md:rounded-[3.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.5)] flex items-center justify-center gap-4 transition-all hover:scale-105 active:scale-95 border-b-4 border-slate-300 ring-4 ring-white/5"
+          >
+            <Rocket size={22} className="md:size-[36px] text-blue-600 shrink-0" />
+            <div className="text-left leading-tight">
+              <span className="block font-black text-xs md:text-lg uppercase italic tracking-tight">RESGATAR 10% OFF</span>
+              <span className="block text-[8px] md:text-[11px] font-bold opacity-70 uppercase tracking-widest">GARANTIR CONDIÇÃO HOJE</span>
+            </div>
+          </button>
+        </div>
       </div>
-
-      <style dangerouslySetInnerHTML={{ __html: `
-        @media print {
-          body::before {
-            content: "MK BASES Box - Proposta de Estruturação Digital Profissional | Future Agency Technology";
-            display: block;
-            background: #0f172a;
-            padding: 15px;
-            font-size: 10px;
-            text-align: center;
-            color: #94a3b8;
-            font-weight: bold;
-          }
-          .tech-grid { background: none !important; }
-        }
-      `}} />
     </div>
   );
 };
 
 export default App;
+
